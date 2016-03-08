@@ -7,7 +7,6 @@ from __future__ import division
 import os
 import os.path
 import argparse
-import httplib2
 
 from oauth2client import client, tools, file
 

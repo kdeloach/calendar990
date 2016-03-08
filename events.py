@@ -12,8 +12,7 @@ import datetime
 import json
 
 from apiclient import discovery
-import oauth2client
-from oauth2client import client, tools, file
+from oauth2client import file
 
 
 USER_AGENT = 'Conf cal test'
@@ -44,7 +43,8 @@ def main():
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    now = (datetime.datetime.utcnow() - datetime.timedelta(hours=8)).isoformat() + 'Z'
+    now = (datetime.datetime.utcnow()
+           - datetime.timedelta(hours=8)).isoformat() + 'Z'
     events = service.events().list(
         calendarId=args.calendar_id,
         timeMin=now, maxResults=10, singleEvents=True,
