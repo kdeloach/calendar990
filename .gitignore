@@ -1,4 +1,4 @@
 env/
 cache/
-data/
+data/*.json
 client_secrets.json

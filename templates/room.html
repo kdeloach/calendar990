@@ -1,7 +1,21 @@
+<html>
+<head>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+</head>
+<body>
+<a href="/">&laquo; Back</a>
 <h1>{{ room_name }}</h1>
+<ul></ul>
 <script type="text/javascript">
 function render(data) {
+    var $els = _.map(data.items, function(item) {
+        return $('<li>').html(item.start.dateTime + ' ' + item.summary);
+    });
+    $('ul').append($els);
     console.log(data);
 }
 render({{ events | safe }});
 </script>
+</body>
+</html>
