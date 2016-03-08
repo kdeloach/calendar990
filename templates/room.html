@@ -1,0 +1,7 @@
+<h1>{{ room_name }}</h1>
+<script type="text/javascript">
+function render(data) {
+    console.log(data);
+}
+render({{ events | safe }});
+</script>
