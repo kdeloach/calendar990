@@ -27,10 +27,7 @@ def main():
     credentials_path = os.path.join(CACHE_DIR, 'credentials.json')
 
     storage = file.Storage(credentials_path)
-    credentials = storage.get()
-
-    if credentials is None or credentials.invalid:
-        tools.run_flow(flow, storage, flags)
+    tools.run_flow(flow, storage, flags)
 
 
 if __name__ == '__main__':

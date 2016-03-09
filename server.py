@@ -5,8 +5,9 @@ from __future__ import unicode_literals
 from __future__ import division
 
 import os
+import json
 
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, url_for
 
 
 app = Flask(__name__)
@@ -19,7 +20,7 @@ def hello():
 
 @app.route('/<room>')
 def view_room(room):
-    room_name = room.replace('-', ' ').title()
+    room_title = room.replace('-', ' ').title()
 
     events_path = os.path.join('data', room + '.json')
     try:
@@ -27,8 +28,20 @@ def view_room(room):
     except IOError:
         abort(404)
 
+    images = json.dumps(get_room_images(room))
+
     return render_template('room.html',
-                           room_name=room_name, events=events)
+                           room_title=room_title,
+                           events=events,
+                           images=images)
+
+
+def get_room_images(room):
+    images_path = 'static/images/' + room
+    if os.path.exists(images_path):
+        return [images_path + '/' + path
+                for path in os.listdir(images_path)]
+    return []
 
 
 if __name__ == '__main__':

@@ -11,11 +11,13 @@ import os.path
 import datetime
 import json
 
+from datetime import date, datetime, timedelta
+
 from apiclient import discovery
 from oauth2client import file
 
 
-USER_AGENT = 'Conf cal test'
+USER_AGENT = 'Azavea conference room schedule'
 CACHE_DIR = 'cache'
 
 
@@ -43,12 +45,12 @@ def main():
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    now = (datetime.datetime.utcnow()
-           - datetime.timedelta(hours=8)).isoformat() + 'Z'
+    timeMin = date.today().strftime('%Y-%m-%dT00:00:00Z')
+    timeMax = date.today().strftime('%Y-%m-%dT23:59:59Z')
+
     events = service.events().list(
         calendarId=args.calendar_id,
-        timeMin=now, maxResults=10, singleEvents=True,
-        orderBy='startTime').execute()
+        timeMin=timeMin, timeMax=timeMax).execute()
     print(json.dumps(events))
 
 
