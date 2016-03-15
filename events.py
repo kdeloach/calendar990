@@ -45,13 +45,29 @@ def main():
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    timeMin = date.today().strftime('%Y-%m-%dT00:00:00Z')
-    timeMax = date.today().strftime('%Y-%m-%dT23:59:59Z')
+    today = date.today()
+    timeMin = today.strftime('%Y-%m-%dT00:00:00Z')
+    timeMax = today.strftime('%Y-%m-%dT23:59:59Z')
 
     events = service.events().list(
         calendarId=args.calendar_id,
         timeMin=timeMin, timeMax=timeMax).execute()
+    events = clean_json(events)
     print(json.dumps(events))
+
+
+def clean_json(data):
+    """Return just the fields we need for each calendar entry"""
+    result = []
+    for item in data['items']:
+        if item['status'] != 'confirmed':
+            continue
+        result.append({
+            'summary': item['summary'],
+            'start_time': item['start']['dateTime'],
+            'end_time': item['end']['dateTime'],
+        })
+    return result
 
 
 if __name__ == '__main__':

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div data-role="page">
+  <div data-role="main" class="ui-content">
+    <ul>
+    {% for room in rooms %}
+      <li><a href="{{ room.url }}" data-transition="slide"
+        >{{ room.title }}</a></li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

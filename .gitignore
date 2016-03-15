@@ -2,3 +2,4 @@ env/
 cache/
 data/*.json
 client_secrets.json
+*.pyc
