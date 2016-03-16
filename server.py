@@ -15,8 +15,9 @@ from flask import Flask, render_template, abort, jsonify
 
 app = Flask(__name__)
 
-DATETIME_MIN_UTC = datetime.min.replace(tzinfo=pytz.UTC)
-DATETIME_MAX_UTC = datetime.max.replace(tzinfo=pytz.UTC)
+EST = pytz.timezone('US/Eastern')
+DATETIME_MIN = datetime.min.replace(tzinfo=pytz.utc)
+DATETIME_MAX = datetime.max.replace(tzinfo=pytz.utc)
 
 
 @app.route('/')
@@ -54,13 +55,12 @@ def view_room_json(room):
 
 def get_room_json(room):
     title = room.replace('-', ' ').title()
-
-    now = datetime.utcnow().replace(tzinfo=pytz.UTC)
+    now = pytz.utc.localize(datetime.utcnow())
 
     events = get_events(room)
-    current_event = get_current_event(now, events)
-    timeframe = get_next_available_time(now, events)
-    subtext = get_subtext(now, current_event, timeframe)
+    current_event = get_current_event(events, now)
+    timeframe = get_next_available_times(events, now)
+    subtext = get_subtext(current_event, timeframe, now)
 
     return {
         'title': title,
@@ -71,7 +71,7 @@ def get_room_json(room):
     }
 
 
-def get_current_event(now, events):
+def get_current_event(events, now):
     for evt in events:
         start_time = dateutil.parser.parse(evt['start_time'])
         end_time = dateutil.parser.parse(evt['end_time'])
@@ -80,33 +80,31 @@ def get_current_event(now, events):
     return None
 
 
-def get_subtext(now, current_event, timeframe):
-    if isinstance(now, basestring):
-        now = dateutil.parser.parse(now).replace(tzinfo=pytz.UTC)
-
+def get_subtext(current_event, timeframe, now):
     start_time, end_time = timeframe
     is_available = current_event is not None
 
-    time_format = '%I:%M %p'
+    start_time_est = start_time.astimezone(EST)
+    end_time_est = end_time.astimezone(EST)
 
     if is_available:
-        if end_time is DATETIME_MAX_UTC:
+        if end_time is DATETIME_MAX:
             # It's available indefinitely.
             return ''
         else:
-            return 'Until {:%I:%M %p}'.format(end_time)
+            return 'Until {:%I:%M %p}'.format(end_time_est)
     else:
-        if start_time is DATETIME_MIN_UTC and end_time is DATETIME_MAX_UTC:
+        if start_time is DATETIME_MIN and end_time is DATETIME_MAX:
             # No events today.
             return ''
-        elif start_time is DATETIME_MIN_UTC:
-            # FIrst event for the day.
-            return 'Next available at {:%I:%M %p}'.format(end_time)
-        elif end_time is DATETIME_MAX_UTC:
-            # Last event for the day.
-            return 'Next available at {:%I:%M %p}'.format(start_time)
+        elif start_time is DATETIME_MIN:
+            # First event of the day.
+            return 'Next available at {:%I:%M %p}'.format(end_time_est)
+        elif end_time is DATETIME_MAX:
+            # Last event of the day.
+            return 'Next available at {:%I:%M %p}'.format(start_time_est)
         else:
-            return 'Next available at {:%I:%M %p} to {:%I:%M %p}'.format(start_time, end_time)
+            return 'Next available at {:%I:%M %p} to {:%I:%M %p}'.format(start_time_est, end_time_est)
 
 
 def get_all_rooms_json():
@@ -130,24 +128,26 @@ def get_images(room):
 
 
 def get_available_times(events):
-    yield DATETIME_MIN_UTC
+    yield DATETIME_MIN
     for evt in events:
         yield dateutil.parser.parse(evt['start_time'])
         yield dateutil.parser.parse(evt['end_time'])
-    yield DATETIME_MAX_UTC
+    yield DATETIME_MAX
 
 
-def get_next_available_time(now, events):
+def get_next_available_times(events, now):
     if isinstance(now, basestring):
-        now = dateutil.parser.parse(now).replace(tzinfo=pytz.UTC)
+        now = dateutil.parser.parse(now)
 
     times = list(get_available_times(events))
     timeframes = zip(times[::2], times[1::2])
+
     for frame in timeframes:
         start_time, end_time = frame
-        # Return frame if `now` occurs between the endpoints.
-        if now >= start_time and now <= end_time:
+
+        if now >= start_time and now < end_time:
             return frame
+
         if now < start_time:
             return frame
 

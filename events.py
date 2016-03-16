@@ -11,7 +11,8 @@ import os.path
 import datetime
 import json
 
-from datetime import date, datetime, timedelta
+import pytz
+import dateutil.parser
 
 from apiclient import discovery
 from oauth2client import file
@@ -45,7 +46,7 @@ def main():
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    today = date.today()
+    today = datetime.date.today()
     timeMin = today.strftime('%Y-%m-%dT00:00:00Z')
     timeMax = today.strftime('%Y-%m-%dT23:59:59Z')
 
@@ -62,10 +63,17 @@ def clean_json(data):
     for item in data['items']:
         if item['status'] != 'confirmed':
             continue
+
+        start_time = dateutil.parser.parse(item['start']['dateTime'])
+        end_time = dateutil.parser.parse(item['end']['dateTime'])
+
+        start_time = start_time.astimezone(pytz.utc)
+        end_time = end_time.astimezone(pytz.utc)
+
         result.append({
             'summary': item['summary'],
-            'start_time': item['start']['dateTime'],
-            'end_time': item['end']['dateTime'],
+            'start_time': start_time.isoformat(),
+            'end_time': end_time.isoformat(),
         })
     return result
 
