@@ -46,13 +46,15 @@ def main():
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    today = datetime.date.today()
-    timeMin = today.strftime('%Y-%m-%dT00:00:00Z')
-    timeMax = today.strftime('%Y-%m-%dT23:59:59Z')
+    today = datetime.datetime.utcnow()
+    timeMin = (today - datetime.timedelta(days=1)).isoformat() + 'Z'
+    timeMax = (today + datetime.timedelta(days=1)).isoformat() + 'Z'
 
     events = service.events().list(
         calendarId=args.calendar_id,
-        timeMin=timeMin, timeMax=timeMax).execute()
+        fields='items(end,start,status,summary)',
+        timeMin=timeMin,
+        timeMax=timeMax).execute()
     events = clean_json(events)
     print(json.dumps(events))
 

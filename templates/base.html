@@ -6,9 +6,22 @@
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.css" />
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.min.js"></script>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   </head>
 <body>
     {% block content %}{% endblock %}
+
+<script type="text/javascript">
+$(window).on('pageload', function() {
+    $('.slider').slick({
+        infinite: false
+    });
+});
+setTimeout(document.location.reload, 1000 * 60);
+</script>
 </body>
 </html>

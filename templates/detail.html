@@ -1,13 +1,46 @@
 {% extends "base.html" %}
 
-{% block title %}{{ room.title }}{% endblock%}
+{% block title %}{{ title }}{% endblock%}
 
 {% block content %}
-<div data-role="page" style="background-image: url({{ room.images|random }})">
+<div data-role="page" {% if not current_event %} class="available"{% endif %}
+    style="background-image: url({{ images|random }})">
   <div data-role="main" class="ui-content">
-    <h1>{{ room.title }}</h1>
-    <h2>{{ room.status }}</h2>
-    <h3>{{ room.subtext }}</h3>
+    <p class="now" style="float: right">
+      {{ now_est.strftime('%-m/%d/%Y %-I:%M %p %Z') }}
+    </p>
+    <h1>{{ title }}</h1>
+    <div class="slider">
+      {% for evt in past_events %}
+        <div>
+          <h2>
+            {{ evt.summary }}
+            {{ evt.start_time|format_date }} &ndash;
+            {{ evt.end_time|format_date }}
+          </h2>
+        </div>
+      {% endfor %}
+
+      <div>
+        {% if current_event %}
+        <h2>
+          {{ current_event.summary }}
+          {{ current_event.start_time|format_date }} &ndash;
+          {{ current_event.end_time|format_date }}
+        </h2>
+        {% endif %}
+      </div>
+
+      {% for evt in future_events %}
+        <div>
+          <h2>
+            {{ evt.summary }}
+            {{ evt.start_time|format_date }} &ndash;
+            {{ evt.end_time|format_date }}
+          </h2>
+        </div>
+      {% endfor %}
+    </div>
   </div>
 </div>
 {% endblock %}

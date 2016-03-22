@@ -3,22 +3,10 @@
     background-size: cover;
 }
 .ui-content {
-    background: #fff;
-    padding: 15px;
+    background: rgba(255, 255, 255, 0.75);
 }
 
-h1, h2, h3 {
-    margin: 0;
-}
-h1 {
-    font-size: 100pt;
-    color: royalblue;
-}
-h2 {
-    font-size: 40pt;
-    color: royalblue;
-}
-h3 {
-    font-size: 15pt;
-    color: lightgray;
+.now {
+    font-size: larger;
+    text-align: center;
 }

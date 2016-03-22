@@ -11,112 +11,128 @@ import dateutil.parser
 from datetime import datetime
 
 from flask import Flask, render_template, abort, jsonify
+from flask.json import JSONEncoder
+
+
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return JSONEncoder.default(self, obj)
 
 
 app = Flask(__name__)
+app.json_encoder = CustomJSONEncoder
 
 EST = pytz.timezone('US/Eastern')
 DATETIME_MIN = datetime.min.replace(tzinfo=pytz.utc)
 DATETIME_MAX = datetime.max.replace(tzinfo=pytz.utc)
 
 
+@app.template_filter('format_date')
+def format_date_filter(dt):
+    return dt.astimezone(EST).strftime('%-I:%M %p')
+
+
 @app.route('/')
 def view_all_rooms():
-    try:
-        rooms_list = get_all_rooms_json()
-    except IOError:
-        abort(404)
-    return render_template('list.html', rooms=rooms_list)
+    now = get_now()
+    result_json = get_all_rooms_json(now)
+    return render_template('list.html', **result_json)
+
+
+@app.route('/.json')
+def view_all_rooms_json():
+    now = get_now()
+    result_json = get_all_rooms_json(now)
+    return jsonify(**result_json)
 
 
 @app.route('/<room>')
 def view_room(room):
+    now = get_now()
     try:
-        room_json = get_room_json(room)
+        result_json = get_room_json(room, now)
     except IOError:
         abort(404)
-    return render_template('detail.html', room=room_json)
+    return render_template('detail.html', **result_json)
 
 
 @app.route('/<room>.json')
-@app.route('/.json', defaults={'room': ''})
 def view_room_json(room):
+    now = get_now()
     try:
-        if room == '':
-            result_json = {
-                'rooms': get_all_rooms_json()
-            }
-        else:
-            result_json = get_room_json(room)
+        result_json = get_room_json(room, now)
     except IOError:
         abort(404)
     return jsonify(**result_json)
 
 
-def get_room_json(room):
+def get_now():
+    return pytz.utc.localize(datetime.utcnow())
+
+
+def get_room_json(room, now):
     title = room.replace('-', ' ').title()
-    now = pytz.utc.localize(datetime.utcnow())
 
     events = get_events(room)
-    current_event = get_current_event(events, now)
-    timeframe = get_next_available_times(events, now)
-    subtext = get_subtext(current_event, timeframe, now)
+    past_events, current_event, future_events = split_events(events, now)
 
     return {
         'title': title,
         'url': '/' + room,
-        'status': current_event['summary'] if current_event else 'Available',
-        'subtext': subtext,
         'images': get_images(room),
+        'past_events': past_events,
+        'current_event': current_event,
+        'future_events': future_events,
+        'now_utc': now,
+        'now_est': now.astimezone(EST),
     }
 
 
-def get_current_event(events, now):
-    for evt in events:
-        start_time = dateutil.parser.parse(evt['start_time'])
-        end_time = dateutil.parser.parse(evt['end_time'])
-        if now >= start_time and now <= end_time:
-            return evt
-    return None
-
-
-def get_subtext(current_event, timeframe, now):
-    start_time, end_time = timeframe
-    is_available = current_event is not None
-
-    start_time_est = start_time.astimezone(EST)
-    end_time_est = end_time.astimezone(EST)
-
-    if is_available:
-        if end_time is DATETIME_MAX:
-            # It's available indefinitely.
-            return ''
-        else:
-            return 'Until {:%I:%M %p}'.format(end_time_est)
-    else:
-        if start_time is DATETIME_MIN and end_time is DATETIME_MAX:
-            # No events today.
-            return ''
-        elif start_time is DATETIME_MIN:
-            # First event of the day.
-            return 'Next available at {:%I:%M %p}'.format(end_time_est)
-        elif end_time is DATETIME_MAX:
-            # Last event of the day.
-            return 'Next available at {:%I:%M %p}'.format(start_time_est)
-        else:
-            return 'Next available at {:%I:%M %p} to {:%I:%M %p}'.format(start_time_est, end_time_est)
-
-
-def get_all_rooms_json():
+def get_all_rooms_json(now):
     rooms = [room.replace('.json', '') for room in os.listdir('data')
              if room.endswith('.json')]
-    return map(get_room_json, rooms)
+    rooms = sorted(rooms)
+    all_rooms = [get_room_json(room, now) for room in rooms]
+    return {
+        'rooms': all_rooms,
+        'now_utc': now,
+        'now_est': now.astimezone(EST),
+    }
+
+
+def split_events(events, now):
+    past_events = []
+    future_events = []
+    current_event = None
+
+    for evt in events:
+        start_time = evt['start_time']
+        end_time = evt['end_time']
+        if end_time <= now:
+            past_events.append(evt)
+        elif now >= start_time and now < end_time:
+           current_event = evt
+        else:
+            future_events.append(evt)
+
+    return past_events, current_event, future_events
 
 
 def get_events(room):
     events_path = os.path.join('data', room + '.json')
     contents = open(events_path, 'r').read()
-    return json.loads(contents)
+    events = json.loads(contents)
+
+    for evt in events:
+        evt['start_time'] = dateutil.parser.parse(evt['start_time'])
+        evt['end_time'] = dateutil.parser.parse(evt['end_time'])
+
+    def by_date(evt):
+        return (evt['start_time'], evt['end_time'])
+
+    return sorted(events, key=by_date)
 
 
 def get_images(room):
@@ -125,31 +141,6 @@ def get_images(room):
         return [os.path.join(images_path, path)
                 for path in os.listdir(images_path)]
     return []
-
-
-def get_available_times(events):
-    yield DATETIME_MIN
-    for evt in events:
-        yield dateutil.parser.parse(evt['start_time'])
-        yield dateutil.parser.parse(evt['end_time'])
-    yield DATETIME_MAX
-
-
-def get_next_available_times(events, now):
-    if isinstance(now, basestring):
-        now = dateutil.parser.parse(now)
-
-    times = list(get_available_times(events))
-    timeframes = zip(times[::2], times[1::2])
-
-    for frame in timeframes:
-        start_time, end_time = frame
-
-        if now >= start_time and now < end_time:
-            return frame
-
-        if now < start_time:
-            return frame
 
 
 if __name__ == '__main__':

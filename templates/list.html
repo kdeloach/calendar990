@@ -2,11 +2,24 @@
 
 {% block content %}
 <div data-role="page">
-  <div data-role="main" class="ui-content">
-    <ul>
+  <p class="now">
+    {{ now_est.strftime('%-m/%d/%Y %-I:%M %p %Z') }}
+  </p>
+  <div data-role="content">
+    <ul data-role="listview">
     {% for room in rooms %}
-      <li><a href="{{ room.url }}" data-transition="slide"
-        >{{ room.title }}</a></li>
+      <li{% if not room.current_event %} class="available"{% endif %}>
+        <a href="{{ room.url }}" data-transition="slide">
+          <h3>{{ room.title }}</h3>
+          {% if room.current_event %}
+            <p>
+            {{ room.current_event.summary }}
+            {{ room.current_event.start_time|format_date }} &ndash;
+            {{ room.current_event.end_time|format_date }}
+            </p>
+          {% endif %}
+        </a>
+      </li>
     {% endfor %}
     </ul>
   </div>
