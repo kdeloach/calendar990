@@ -34,20 +34,20 @@ This file can be obtained from the [Google API Credentials](https://console.deve
 
 2. Authenticate oauth2 credentials with the following steps:
 
-```bash
-./scripts/run-interactive.sh
-cd calendar990
-./make_credentials.py --noauth_local_webserver
-```
+    ```bash
+    ./scripts/run-interactive.sh
+    cd calendar990
+    ./make_credentials.py --noauth_local_webserver
+    ```
 
 3. This should produce a file called `credentials.json`.
 
 4. Stage these files, but do not commit them.
 
-```bash
-git add -f client_secrets.json
-git add -f credentials.json
-```
+    ```bash
+    git add -f client_secrets.json
+    git add -f credentials.json
+    ```
 
 5. Run `eb deploy --staged`
 

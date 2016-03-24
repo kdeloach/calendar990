@@ -35,9 +35,14 @@ DATETIME_MIN = datetime.min.replace(tzinfo=pytz.utc)
 DATETIME_MAX = datetime.max.replace(tzinfo=pytz.utc)
 
 
+@app.template_filter('format_time')
+def format_time_filter(dt):
+    return dt.astimezone(EST).strftime('%-I:%M %p')
+
+
 @app.template_filter('format_date')
 def format_date_filter(dt):
-    return dt.astimezone(EST).strftime('%-I:%M %p')
+    return dt.astimezone(EST).strftime('%Y-%m-%d %-I:%M %p')
 
 
 @app.errorhandler(Exception)
@@ -93,17 +98,16 @@ def get_room_json(room, now):
     title = room.replace('-', ' ').title()
 
     events = get_events(room)
-    past_events, current_event, future_events = split_events(events, now)
+    events = filter_events(events, now, EST)
+    _, current_event, future_events = split_events(events, now)
 
     return {
         'title': title,
         'url': '/' + room,
         'images': get_images(room),
-        'past_events': past_events,
         'current_event': current_event,
         'future_events': future_events,
-        'now_utc': now,
-        'now_est': now.astimezone(EST),
+        'now_utc': now
     }
 
 
@@ -117,8 +121,7 @@ def get_all_rooms_json(now):
         all_rooms = []
     return {
         'rooms': all_rooms,
-        'now_utc': now,
-        'now_est': now.astimezone(EST),
+        'now_utc': now
     }
 
 
@@ -149,6 +152,7 @@ def get_events(room):
     with open(events_path, 'r') as fp:
         events = json.load(fp)
 
+    # XXX: Mutation
     for evt in events:
         evt['start_time'] = dateutil.parser.parse(evt['start_time'])
         evt['end_time'] = dateutil.parser.parse(evt['end_time'])
@@ -157,6 +161,12 @@ def get_events(room):
         return (evt['start_time'], evt['end_time'])
 
     return sorted(events, key=by_date)
+
+
+def filter_events(events, now, tz):
+    """Return events that are happening today only"""
+    return [e for e in events
+            if e['start_time'].astimezone(tz).day == now.astimezone(tz).day]
 
 
 def get_images(room):

@@ -7,30 +7,22 @@
     style="background-image: url({{ images|random }})">
   <div data-role="main" class="ui-content">
     <p class="now" style="float: right">
-      {{ now_est.strftime('%-m/%d/%Y %-I:%M %p %Z') }}
+      {{ now_utc|format_date }}
     </p>
     <h1>{{ title }}</h1>
-    <div class="slider">
-      <div>
-        {% if current_event %}
-        <h2>
-          {{ current_event.summary }}
-          {{ current_event.start_time|format_date }} &ndash;
-          {{ current_event.end_time|format_date }}
-        </h2>
-        {% endif %}
-      </div>
-
-      {% for evt in future_events %}
-        <div>
-          <h2>
-            {{ evt.summary }}
-            {{ evt.start_time|format_date }} &ndash;
-            {{ evt.end_time|format_date }}
-          </h2>
-        </div>
-      {% endfor %}
-    </div>
+    {% if current_event %}
+      <h2>
+      {{ current_event.summary }}
+      {{ current_event.start_time|format_time }} &ndash;
+      {{ current_event.end_time|format_time }}
+      </h2>
+    {% elif future_events %}
+      <h2 style="font-style: italic">
+      Next: {{ future_events[0].summary }}
+      {{ future_events[0].start_time|format_time }} &ndash;
+      {{ future_events[0].end_time|format_time }}
+      </h2>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
