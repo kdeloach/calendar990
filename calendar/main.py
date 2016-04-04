@@ -41,6 +41,11 @@ def view_all_rooms():
     return render_template('list.html', **result_json)
 
 
+@app.route('/health')
+def health_check():
+    return 'OK', 200
+
+
 @app.route('/.json')
 def view_all_rooms_json():
     now = get_now()
@@ -144,4 +149,4 @@ def get_images(room):
 
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', debug=True)
+    app.run('0.0.0.0', port=5000, debug=True)

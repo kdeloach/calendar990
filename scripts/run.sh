@@ -2,5 +2,8 @@
 
 set -ex
 
-path=${BASH_SOURCE%/*}
-python ${path}/../server.py
+docker run \
+    -p 5000:80 \
+    -p 9001:9001 \
+    --rm \
+    docker-calendar
