@@ -37,11 +37,7 @@ def get_credentials():
     return credentials
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('calendar_id')
-    args = parser.parse_args()
-
+def fetch_events(calendar_id):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
@@ -51,12 +47,11 @@ def main():
     timeMax = (today + datetime.timedelta(days=1)).isoformat() + 'Z'
 
     events = service.events().list(
-        calendarId=args.calendar_id,
+        calendarId=calendar_id,
         fields='items(end,start,status,summary)',
         timeMin=timeMin,
         timeMax=timeMax).execute()
-    events = clean_json(events)
-    print(json.dumps(events))
+    return clean_json(events)
 
 
 def clean_json(data):
@@ -78,6 +73,14 @@ def clean_json(data):
             'end_time': end_time.isoformat(),
         })
     return result
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('calendar_id')
+    args = parser.parse_args()
+    events = fetch_events(args.calendar_id)
+    print(json.dumps(events))
 
 
 if __name__ == '__main__':

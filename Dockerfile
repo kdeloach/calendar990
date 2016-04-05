@@ -16,10 +16,9 @@ RUN pip install -r requirements.txt
 ADD nginx.conf /etc/nginx/sites-enabled/default
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
-ADD calendar/ calendar/
+ADD calendar990/ calendar990/
 
 EXPOSE 80
-EXPOSE 9001
 
 ADD supervisord.conf .
 CMD ["supervisord", "-c", "supervisord.conf"]

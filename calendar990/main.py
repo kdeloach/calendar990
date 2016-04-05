@@ -118,7 +118,7 @@ def split_events(events, now):
         if end_time <= now:
             past_events.append(evt)
         elif now >= start_time and now < end_time:
-           current_event = evt
+            current_event = evt
         else:
             future_events.append(evt)
 
