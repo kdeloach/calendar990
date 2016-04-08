@@ -7,6 +7,7 @@ from __future__ import division
 import os
 import json
 import pytz
+import logging
 import dateutil.parser
 from datetime import datetime
 
@@ -23,6 +24,11 @@ class CustomJSONEncoder(JSONEncoder):
 
 app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
+app.logger.addHandler(logging.StreamHandler())
+
+
+DATA_PATH = os.environ['DATA_PATH']
+
 
 EST = pytz.timezone('US/Eastern')
 DATETIME_MIN = datetime.min.replace(tzinfo=pytz.utc)
@@ -32,6 +38,12 @@ DATETIME_MAX = datetime.max.replace(tzinfo=pytz.utc)
 @app.template_filter('format_date')
 def format_date_filter(dt):
     return dt.astimezone(EST).strftime('%-I:%M %p')
+
+
+@app.errorhandler(Exception)
+def error_handler(ex):
+    app.logger.exception(ex)
+    return 'Internal Server Error', 500
 
 
 @app.route('/')
@@ -96,10 +108,13 @@ def get_room_json(room, now):
 
 
 def get_all_rooms_json(now):
-    rooms = [room.replace('.json', '') for room in os.listdir('data')
-             if room.endswith('.json')]
-    rooms = sorted(rooms)
-    all_rooms = [get_room_json(room, now) for room in rooms]
+    if os.path.exists(DATA_PATH):
+        rooms = [room.replace('.json', '') for room in os.listdir(DATA_PATH)
+                 if room.endswith('.json')]
+        rooms = sorted(rooms)
+        all_rooms = [get_room_json(room, now) for room in rooms]
+    else:
+        all_rooms = []
     return {
         'rooms': all_rooms,
         'now_utc': now,
@@ -126,9 +141,13 @@ def split_events(events, now):
 
 
 def get_events(room):
-    events_path = os.path.join('data', room + '.json')
-    contents = open(events_path, 'r').read()
-    events = json.loads(contents)
+    events_path = os.path.join(DATA_PATH, room + '.json')
+
+    if not os.path.exists(events_path):
+        return []
+
+    with open(events_path, 'r') as fp:
+        events = json.load(fp)
 
     for evt in events:
         evt['start_time'] = dateutil.parser.parse(evt['start_time'])

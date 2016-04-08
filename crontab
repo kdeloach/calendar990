@@ -1,0 +1,2 @@
+*/5 * * * * root cd /src/calendar990; SECRETS_PATH=/src/secrets DATA_PATH=/src/data ./collect.py 1>/var/log/cron.log 2>&1
+

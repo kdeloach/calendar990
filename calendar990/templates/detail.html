@@ -11,16 +11,6 @@
     </p>
     <h1>{{ title }}</h1>
     <div class="slider">
-      {% for evt in past_events %}
-        <div>
-          <h2>
-            {{ evt.summary }}
-            {{ evt.start_time|format_date }} &ndash;
-            {{ evt.end_time|format_date }}
-          </h2>
-        </div>
-      {% endfor %}
-
       <div>
         {% if current_event %}
         <h2>

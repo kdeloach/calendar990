@@ -1,7 +1,5 @@
-env/
-cache/
-data/
 client_secrets.json
+credentials.json
 *.pyc
 
 # Elastic Beanstalk Files

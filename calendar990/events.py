@@ -4,10 +4,10 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import division
 
-import argparse
-import httplib2
 import os
 import os.path
+import argparse
+import httplib2
 import datetime
 import json
 
@@ -18,21 +18,20 @@ from apiclient import discovery
 from oauth2client import file
 
 
-USER_AGENT = 'Azavea conference room schedule'
-CACHE_DIR = 'cache'
+USER_AGENT = 'Azavea calendar990'
+SECRETS_PATH = os.environ['SECRETS_PATH']
+CREDENTIALS_PATH = os.path.join(SECRETS_PATH, 'credentials.json')
 
 
 def get_credentials():
-    if not os.path.exists(CACHE_DIR):
-        raise Exception('Missing cache dir; Run ./make_credentials.py')
+    if not os.path.exists(CREDENTIALS_PATH):
+        raise Exception('Credentials not found; Run make_credentials.py')
 
-    credentials_path = os.path.join(CACHE_DIR, 'credentials.json')
-
-    storage = file.Storage(credentials_path)
+    storage = file.Storage(CREDENTIALS_PATH)
     credentials = storage.get()
 
     if credentials is None or credentials.invalid:
-        raise Exception('Invalid credentials; Run ./make_credentials.py')
+        raise Exception('Invalid credentials; Run make_credentials.py')
 
     return credentials
 

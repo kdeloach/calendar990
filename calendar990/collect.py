@@ -4,16 +4,17 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import division
 
+import os
+import os.path
 import json
 import logging
-import os.path
 
 from events import fetch_events
 
 
 log = logging.getLogger(__name__)
 
-DATA_DIR = 'data/'
+DATA_PATH = os.environ['DATA_PATH']
 
 CALENDARS = (
     ('chicago', 'azavea.com_37323531353137392d3335@resource.calendar.google.com'),
@@ -39,15 +40,16 @@ CALENDARS = (
 
 
 def download_calendar(name, calendar_id):
-    filename = os.path.join(DATA_DIR, name + '.json')
+    filename = os.path.join(DATA_PATH, name + '.json')
     with open(filename, 'w') as fp:
+        log.info('Downloading {}'.format(calendar_id))
         events = fetch_events(calendar_id)
         fp.write(json.dumps(events))
 
 
 def main():
     ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
+    log.setLevel(logging.DEBUG)
     log.addHandler(ch)
 
     for name, calendar_id in CALENDARS:
