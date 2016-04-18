@@ -149,8 +149,12 @@ def get_events(room):
     if not os.path.exists(events_path):
         return []
 
-    with open(events_path, 'r') as fp:
-        events = json.load(fp)
+    try:
+        with open(events_path, 'r') as fp:
+            events = json.load(fp)
+    except ValueError:
+        # Could not decode JSON object?
+        return []
 
     # XXX: Mutation
     for evt in events:
