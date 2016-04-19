@@ -7,7 +7,7 @@
     style="background-image: url({{ images|random }})">
   <div data-role="main" class="ui-content">
     <p class="now" style="float: right">
-      {{ now_utc|format_date }}
+      {{ now_utc|format_time }}
     </p>
     <h1>{{ title }}</h1>
     {% if current_event %}

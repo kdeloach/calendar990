@@ -18,11 +18,8 @@
 
 <script type="text/javascript">
 setInterval(function() {
-    $.mobile.changePage(window.location.href, {
-        allowSamePageTransition: true,
-        transition: 'none',
-        reloadPage: true
-    });
+    //$('[data-role="page"]').load(window.location.href + ' [data-role="page"]');
+    window.location.reload();
 }, 1000 * 60);
 </script>
 </body>
