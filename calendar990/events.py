@@ -10,6 +10,7 @@ import argparse
 import httplib2
 import datetime
 import json
+import logging
 
 import pytz
 import dateutil.parser
@@ -17,6 +18,8 @@ import dateutil.parser
 from apiclient import discovery
 from oauth2client import file
 
+
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 
 USER_AGENT = 'Azavea calendar990'
 SECRETS_PATH = os.environ['SECRETS_PATH']

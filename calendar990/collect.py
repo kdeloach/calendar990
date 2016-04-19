@@ -12,7 +12,7 @@ import logging
 from events import fetch_events
 
 
-log = logging.getLogger(__name__)
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 
 DATA_PATH = os.environ['DATA_PATH']
 
@@ -42,21 +42,17 @@ CALENDARS = (
 def download_calendar(name, calendar_id):
     filename = os.path.join(DATA_PATH, name + '.json')
     with open(filename, 'w') as fp:
-        log.info('Downloading {}'.format(calendar_id))
+        logging.info('Downloading {}'.format(calendar_id))
         events = fetch_events(calendar_id)
         fp.write(json.dumps(events))
 
 
 def main():
-    ch = logging.StreamHandler()
-    log.setLevel(logging.DEBUG)
-    log.addHandler(ch)
-
     for name, calendar_id in CALENDARS:
         try:
             download_calendar(name, calendar_id)
         except Exception:
-            log.exception('Error downloading {} ({})'.format(calendar_id, name))
+            logging.exception('Error downloading {} ({})'.format(calendar_id, name))
 
 
 if __name__ == '__main__':
