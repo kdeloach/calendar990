@@ -63,6 +63,8 @@ def clean_json(data):
         if item['status'] != 'confirmed':
             continue
 
+        summary = item.get('summary', '')
+
         start_time = dateutil.parser.parse(item['start']['dateTime'])
         end_time = dateutil.parser.parse(item['end']['dateTime'])
 
@@ -70,7 +72,7 @@ def clean_json(data):
         end_time = end_time.astimezone(pytz.utc)
 
         result.append({
-            'summary': item['summary'],
+            'summary': summary,
             'start_time': start_time.isoformat(),
             'end_time': end_time.isoformat(),
         })
