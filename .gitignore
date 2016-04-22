@@ -2,3 +2,5 @@ client_secrets.json
 credentials.json
 *.pyc
 node_modules/
+.vagrant/
+policy.json
