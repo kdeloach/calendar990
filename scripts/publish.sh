@@ -3,7 +3,7 @@ set -ex
 
 . /opt/env.sh
 
-cat > /tmp/policy.json <<EOF
+cat >/tmp/policy.json <<EOF
 {
    "Statement": [
       {
