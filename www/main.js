@@ -48,8 +48,8 @@ var CalendarEvents = Backbone.Model.extend({
             console.debug('Failed to sync events', arguments);
         }).always(function() {
             // TODO: Smarter timeout logic
-            // Poll once every 3 minutes.
-            setTimeout(self.startPolling.bind(self), 1000 * 60 * 3);
+            // Poll once per minute.
+            setTimeout(self.startPolling.bind(self), 1000 * 60);
         });
     },
 
