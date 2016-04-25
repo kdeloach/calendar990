@@ -4,6 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import division
 
+import sys
 import os
 import os.path
 import httplib2
@@ -51,13 +52,15 @@ CALENDARS = (
 
 def get_credentials():
     if not os.path.exists(CREDENTIALS_PATH):
-        raise Exception('Credentials not found; Run make_credentials.py')
+        logging.error('Credentials not found; Run make_credentials.py')
+        sys.exit(1)
 
     storage = file.Storage(CREDENTIALS_PATH)
     credentials = storage.get()
 
     if credentials is None or credentials.invalid:
-        raise Exception('Invalid credentials; Run make_credentials.py')
+        logging.error('Invalid credentials; Run make_credentials.py')
+        sys.exit(1)
 
     return credentials
 
