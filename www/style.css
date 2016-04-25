@@ -1,0 +1,89 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: larger;
+    overflow: hidden;
+}
+
+.hide {
+    display: none;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    list-style: none;
+    margin: 25px;
+    padding: 0;
+}
+
+.room, .list {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.list {
+    overflow: auto;
+}
+
+.list .room-name {
+    margin-bottom: 6px;
+}
+.list .event {
+    font-size: smaller;
+}
+.list .event.current .summary {
+    font-weight: bold;
+}
+.list .event.next,
+.room .event.next {
+    font-style: italic;
+}
+
+
+.list .now {
+    text-align: center;
+}
+.room .now {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+}
+
+.room {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.room .header {
+    position: absolute;
+    margin: 15px;
+}
+
+.room h1 {
+    margin: 0;
+    margin-bottom: 15px;
+    font-size: 45pt;
+}
+
+.room .event {
+    display: none;
+}
+
+.back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    display: none;
+}

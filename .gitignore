@@ -2,8 +2,7 @@ client_secrets.json
 credentials.json
 *.pyc
 node_modules/
-
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
+env/
+.vagrant/
+policy.json
+www/events.json
