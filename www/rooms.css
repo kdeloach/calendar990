@@ -21,6 +21,8 @@
 .saigon { background-image: url(images/saigon/1.jpeg); color: #fff; }
 
 .salta { background-image: url(images/salta/1.jpg); }
+.salta .header { color: #fff; }
+
 .shanghai { background-image: url(images/shanghai/1.jpg); }
 .springfield { background-image: url(images/springfield/1.jpg); }
 .stockholm { background-image: url(images/stockholm/1.jpg); }
