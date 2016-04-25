@@ -4,9 +4,8 @@ set -ex
 cd /vagrant
 
 apt-get update
-apt-get install -y python-dev python-setuptools
+apt-get install -y python-pip
 
-easy_install pip
 pip install -r requirements.txt
 
 cat > /opt/env.sh <<EOF
