@@ -3,7 +3,7 @@ set -ex
 
 cd /vagrant
 
-apt-get update
+# apt-get update
 apt-get install -y python-pip
 
 pip install -r requirements.txt
