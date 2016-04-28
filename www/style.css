@@ -87,3 +87,10 @@ li {
     padding: 5px;
     display: none;
 }
+
+.updated-at {
+    font-style: italic;
+    font-size: 12px;
+    text-align: right;
+    margin: 10px;
+}

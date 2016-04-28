@@ -5,40 +5,25 @@ var CalendarEvents = Backbone.Model.extend({
     url: 'events.json',
 
     defaults: {
-        now_utc: new Date().getTime(),
+        updatedAt: new Date().getTime(),
         rooms: []
     },
 
     parse: function(response, options) {
-        // Add a few extra attributes to make templates a little simpler.
-        _.each(response.rooms, function(room) {
-            var now_utc = response.now_utc;
-            room.now_utc = now_utc;
-            room.events = this.sortEvents(room.events);
-            room.current_events = this.getCurrentEvents(now_utc, room);
-            room.next_event = this.getNextEvent(now_utc, room);
+        var updatedAt = moment(response.updatedAt),
+            now = response.debug ? updatedAt : moment();
 
-            // XXX
-            _.each(room.current_events, function(evt) {
-                evt.is_current = true;
-            });
-
-            // XXX
-            if (room.next_event) {
-                room.next_event.is_next = true;
-            }
-
-            // XXX
-            // Indicate which event should appear initially in the pager.
-            // Assumes events are sorted chronologically.
-            for (var i = 0; i < room.events.length; i++) {
-                var evt = room.events[i];
-                if (evt.is_current || evt.is_next) {
-                    room.eventIndex = i;
-                    break;
-                }
-            }
+        var models = _.map(response.rooms, function(room) {
+            models.push(new RoomModel({
+                // XXX: Copy these values from parent node to each
+                // room model to simplify templating.
+                now: response.now,
+                updatedAt: response.updatedAt,
+                events: this.sortEvents(room.events)
+            }));
         }, this);
+
+        response.rooms = models;
         return response;
     },
 
@@ -53,7 +38,7 @@ var CalendarEvents = Backbone.Model.extend({
         });
     },
 
-    getRoom: function(roomId) {
+    createRoomModel: function(roomId) {
         var roomData = _.findWhere(this.get('rooms'), {id: roomId});
         return new RoomModel(roomData);
     },
@@ -62,38 +47,46 @@ var CalendarEvents = Backbone.Model.extend({
         return _.sortBy(events, function(evt) {
             return moment(evt.start_time).format('x');
         });
-    },
-
-    // There can be more than 1 current event if the start/end dates overlap.
-    getCurrentEvents: function(now, roomData) {
-        now = moment(now);
-        return _.filter(roomData.events, function(evt) {
-            var start_time = moment(evt.start_time),
-                end_time = moment(evt.end_time);
-            // "[]" indicates that start_time and end_time are inclusive
-            return now.isBetween(start_time, end_time, null, '[]');
-        });
-    },
-
-    getNextEvent: function(now, roomData) {
-        now = moment(now);
-        return _.find(roomData.events, function(evt) {
-            var start_time = moment(evt.start_time);
-            return start_time.isAfter(now);
-        });
     }
 });
 
 var RoomModel = Backbone.Model.extend({
     defaults: {
-        now_utc: new Date().getTime(),
+        now: new Date().getTime(),
+        updatedAt: new Date().getTime(),
         id: '',
         name: '',
         events: [],
-        current_events: [],
-        next_events: [],
-        // Index of the current event to display on the pager.
-        eventIndex: 0
+        eventIndex: 0,
+        userEventIndex: 0
+    },
+
+    getCurrentEvent: function() {
+        return _.find(this.get('events'), this.isCurrent.bind(this));
+    },
+
+    getNextEvent: function() {
+        return _.find(this.get('events'), this.isNext.bind(this));
+    },
+
+    isCurrent: function(evt) {
+        var now = this.get('now'),
+            startTime = moment(evt.startTime),
+            endTime = moment(evt.endTime);
+        // "[]" indicates that startTime and endTime are inclusive
+        return now.isBetween(startTime, endTime, null, '[]');
+    },
+
+    isNext: function(evt) {
+        var now = this.get('now'),
+            startTime = moment(evt.startTime);
+        return startTime.isAfter(now);
+    },
+
+    isSameDay: function(evt) {
+        var now = this.get('now'),
+            startTime = moment(evt.startTime);
+        return now.dayOfYear() === startTime.dayOfYear();
     }
 });
 
@@ -124,6 +117,9 @@ var BaseView = Backbone.View.extend({
     },
 
     formatEvent: function(evt) {
+        if (!evt) {
+            return '';
+        }
         return new EventView({
             model: new Backbone.Model(evt)
         }).render().$el.html();
@@ -145,26 +141,9 @@ var RoomView = BaseView.extend({
     },
 
     prevEvent: function() {
-        var eventIndex = this.model.get('eventIndex'),
-            currentEvent = this.$el.find('.event:visible');
-
-        if (eventIndex === 0) {
-            return;
-        }
-
-        this.model.set('eventIndex', Math.max(eventIndex - 1, 0));
     },
 
     nextEvent: function() {
-        var eventIndex = this.model.get('eventIndex'),
-            lastEventIndex = this.model.get('events').length - 1,
-            currentEvent = this.$el.find('.event:visible');
-
-        if (eventIndex === lastEventIndex) {
-            return;
-        }
-
-        this.model.set('eventIndex', Math.min(eventIndex + 1, lastEventIndex));
     },
 
     render: function() {
@@ -173,8 +152,6 @@ var RoomView = BaseView.extend({
         // Add a few extra classes to the container for additional customizations.
         this.$el.addClass(this.model.get('id'));
         this.$el.addClass('style-' + _.random(2));
-
-        this.renderPager();
 
         return this;
     },
@@ -223,13 +200,13 @@ var AppController = Backbone.Router.extend({
 
     showRoom: function(roomId) {
         var self = this,
-            model = this.calendarEvents.getRoom(roomId),
+            model = this.calendarEvents.createRoomModel(roomId),
             view = new RoomView({
                 model: model
             });
 
         view.listenTo(this.calendarEvents, 'change', function() {
-            var newModel = self.calendarEvents.getRoom(roomId);
+            var newModel = self.calendarEvents.createRoomModel(roomId);
             model.set(newModel.attributes);
         });
 

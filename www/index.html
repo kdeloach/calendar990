@@ -13,23 +13,20 @@
   </head>
 <body>
 <script type="javascript/template" id="tmpl-index">
-<p class="now"><%- formatDate(data.now_utc) %></p>
+<p class="now"><%- formatDate(data.now) %></p>
 <ul>
 <% _.each(data.rooms, function(room) { %>
     <li>
         <div class="room-name"><a href="#<%- room.id %>"><%- room.name %></a></div>
-        <% if (room.current_events.length) { %>
-            <%= formatEvent(room.current_events[0]) %>
-        <% } else if (room.next_event) { %>
-            <%= formatEvent(room.next_event) %>
-        <% } %>
+        <%= formatEvent(room.getCurrentEvent() || room.getNextEvent()) %>
     </li>
 <% }) %>
 </ul>
+<p class="updated-at">Last updated at <%- formatDate(data.updatedAt) %></p>
 </script>
 
 <script type="javascript/template" id="tmpl-room">
-<div class="now"><%- formatDate(data.now_utc) %></div>
+<div class="now"><%- formatDate(data.now) %></div>
 <div class="header">
     <h1><%- data.name %></h1>
     <% _.each(data.events, function(evt) { %>
@@ -48,16 +45,16 @@
 </script>
 
 <script type="javascript/template" id="tmpl-event">
-<div class="event<%- (data.is_current ? ' current' :
-                      data.is_next ? ' next' : '') %>">
+<div class="event<%- (data.isCurrent ? ' current' :
+                      data.isNext ? ' next' : '') %>">
     <span class="summary">
-        <%- data.is_next ? 'Next: ' : '' %>
+        <%- data.isNext ? 'Next: ' : '' %>
         <%- data.summary %>
     </span>
-    <span class="time" title="<%- formatDate(data.start_time) %> &ndash; <%- formatTime(data.end_time) %>
+    <span class="time" title="<%- formatDate(data.startTime) %> &ndash; <%- formatTime(data.endTime) %>
 <%- data.description %>">
-    <%- formatTime(data.start_time) %> &ndash;
-    <%- formatTime(data.end_time) %>
+    <%- formatTime(data.startTime) %> &ndash;
+    <%- formatTime(data.endTime) %>
     </span>
     <a href="<%- data.htmlLink %>" target="new">Link</a>
 </div>
