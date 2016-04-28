@@ -10,8 +10,8 @@ Required environmental variables:
 | Name | Description |
 | --- | --- |
 | `CAL990_BUCKET` | Name of S3 bucket to deploy `www/` folder to (Ex. `calendar990`) |
-| `CAL990_AWS_ACCESS_KEY_ID` | N/A |
-| `CAL990_AWS_SECRET_ACCESS_KEY` | N/A |
+| `CAL990_AWS_ACCESS_KEY_ID` | AWS Access Key ID |
+| `CAL990_AWS_SECRET_ACCESS_KEY` | AWS Secret Key |
 
 Get things started with:
 
