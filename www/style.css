@@ -20,7 +20,7 @@ li {
     padding: 0;
 }
 
-.room, .list {
+.room-detail, .list {
     position: absolute;
     top: 0;
     left: 0;
@@ -31,7 +31,7 @@ li {
     overflow: auto;
 }
 
-.list .room-name {
+.list .room .name {
     margin-bottom: 6px;
 }
 .list .event {
@@ -41,7 +41,7 @@ li {
     font-weight: bold;
 }
 .list .event.next,
-.room .event.next {
+.room-detail .event.next {
     font-style: italic;
 }
 
@@ -49,14 +49,14 @@ li {
 .list .now {
     text-align: center;
 }
-.room .now {
+.room-detail .now {
     position: absolute;
     top: 0;
     right: 0;
     padding: 5px;
 }
 
-.room {
+.room-detail {
     overflow: hidden;
     position: absolute;
     width: 100%;
@@ -65,19 +65,26 @@ li {
     background-size: cover;
 }
 
-.room .header {
+.room-detail .header {
     position: absolute;
     margin: 15px;
 }
 
-.room h1 {
+.room-detail h1 {
     margin: 0;
     margin-bottom: 15px;
     font-size: 45pt;
 }
 
-.room .event {
+.room-detail .event {
     display: none;
+}
+.room-detail .event.show {
+    display: block;
+}
+
+.pager a.disabled {
+    color: gray;
 }
 
 .back {
@@ -86,4 +93,11 @@ li {
     left: 0;
     padding: 5px;
     display: none;
+}
+
+.updated-at {
+    font-style: italic;
+    font-size: 12px;
+    text-align: right;
+    margin: 10px;
 }
