@@ -75,13 +75,14 @@ def fetch_events(now_utc, calendar_id):
 
     events = service.events().list(
         calendarId=calendar_id,
+        singleEvents=True,
         fields=','.join([
             'description',
+            'items(id)',
             'items(start)',
             'items(end)',
             'items(description)',
             'items(htmlLink)',
-            'items(recurrence)',
             'items(status)',
             'items(summary)',
         ]),
@@ -104,24 +105,18 @@ def clean_json(now_utc, data):
         start_time = start_time.astimezone(pytz.utc)
         end_time = end_time.astimezone(pytz.utc)
 
+        id = item.get('id', '')
         summary = item.get('summary', '')
         description = item.get('description', '')
         htmlLink = item.get('htmlLink', '')
 
-        # Recurring events are returned from the API with their original
-        # start and end datetimes.
-        recurrence = item.get('recurrence', False)
-        if recurrence:
-            args = dict(year=now_utc.year, month=now_utc.month, day=now_utc.day)
-            start_time = start_time.replace(**args)
-            end_time = end_time.replace(**args)
-
         result.append({
+            'id': id,
             'summary': summary,
             'description': description,
             'htmlLink': htmlLink,
-            'start_time': start_time.isoformat(),
-            'end_time': end_time.isoformat(),
+            'startTime': start_time.isoformat(),
+            'endTime': end_time.isoformat(),
         })
     return result
 
@@ -130,7 +125,7 @@ def make_slug(name):
     return name.lower().replace(' ', '-')
 
 
-def calendars(now_utc):
+def calendars_json(now_utc, debug=False):
     rooms = []
 
     for name, calendar_id in CALENDARS:
@@ -142,10 +137,13 @@ def calendars(now_utc):
             'events': events,
         })
 
-    return {
-        'now_utc': now_utc.isoformat() + 'Z',
+    result = {
+        'debug': debug,
+        'updatedAt': now_utc.isoformat() + 'Z',
         'rooms': rooms,
     }
+
+    return result
 
 
 def calendar_events(now_utc, calendar_id):
@@ -158,18 +156,19 @@ def calendar_events(now_utc, calendar_id):
 
 
 if __name__ == '__main__':
-    now_est = datetime.datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(EST)
-
     parser = argparse.ArgumentParser()
-    parser.add_argument('now_est', nargs='?', default=now_est)
+    parser.add_argument('now_est', nargs='?',
+                        help='Time period (EST) to use for querying events'
+                             '(enables debug mode)')
     args = parser.parse_args()
 
-    # If an empty string is ever passed as the first argument...
-    if not args.now_est:
-        args.now_est = now_est
+    debug = False
 
-    if isinstance(args.now_est, basestring):
-        args.now_est = EST.localize(dateutil.parser.parse(args.now_est))
+    if args.now_est:
+        debug = True
+        now_est = EST.localize(dateutil.parser.parse(args.now_est))
+        now_utc = now_est.astimezone(pytz.utc)
+    else:
+        now_utc = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
 
-    now_utc = args.now_est.astimezone(pytz.utc)
-    print(json.dumps(calendars(now_utc)))
+    print(json.dumps(calendars_json(now_utc, debug=debug)))
