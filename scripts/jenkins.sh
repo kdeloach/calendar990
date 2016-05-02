@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-git describe --tags --always --dirty > www/version.txt
+git rev-parse HEAD > www/version.txt
 
 vagrant up --provision
 vagrant ssh -c '/vagrant/scripts/collect.sh'
