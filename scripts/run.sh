@@ -2,5 +2,5 @@
 set -ex
 
 pushd www/
-python -m SimpleHTTPServer
+python -m SimpleHTTPServer 8001
 popd
