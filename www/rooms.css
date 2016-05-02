@@ -1,6 +1,4 @@
 .chicago { background-image: url(images/chicago/1.jpg); color: #fff; }
-.chicago .header { bottom: 0; right: 0; }
-.chicago .now { top: initial; bottom: 0; left: 0; }
 
 .istanbul { background-image: url(images/istanbul/1.jpg); color: #fff; }
 .jakarta { background-image: url(images/jakarta/1.jpg); color: #fff; }
@@ -11,7 +9,6 @@
 .nairobi { background-image: url(images/nairobi/1.jpg); color: #fff; }
 
 .new-york { background-image: url(images/new-york/1.jpg); }
-.new-york .header { top: 0; right: 0; }
 
 .oslo { background-image: url(images/oslo/1.jpg); }
 .oslo .header { bottom: 0; color: #fff; }
@@ -29,7 +26,6 @@
 .sydney { background-image: url(images/sydney/1.jpg); }
 
 .tokyo { background-image: url(images/tokyo/1.jpg); }
-.tokyo .header { left: 40%; }
 
 .toronto { color: #fff; }
 .toronto.style-0,
