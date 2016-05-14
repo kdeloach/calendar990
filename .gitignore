@@ -1,8 +1,5 @@
-client_secrets.json
-credentials.json
 *.pyc
 node_modules/
 env/
 .vagrant/
-policy.json
 www/events.json
