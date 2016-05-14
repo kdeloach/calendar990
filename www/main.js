@@ -105,25 +105,26 @@ function CalendarList() {
     _.extend(this, Backbone.Events);
 
     this.fetch = function() {
-        console.trace('fetch');
         var batch = gapi.client.newBatch();
 
         _.each(CALENDARS, function(id) {
             batch.add(GApi.listEvents(id));
         });
 
-        return batch.then(function(response) {
+        return batch.then(function(batchResponse) {
             try {
-                var children = _.map(response.result, function(childResponse) {
-                    var child = childResponse.result;
-                    child.id = CALENDARS[child.summary];
-                    return child;
+                var responses = _.filter(batchResponse.result, function(response) {
+                    return !response.result.error;
                 });
-                // Sort calendars by name.
-                children = _.sortBy(children, function(child) {
-                    return child.summary;
+                var calendars = _.map(responses, function(response) {
+                    var data = response.result;
+                    data.id = CALENDARS[data.summary];
+                    return data;
                 });
-                self.children = children;
+                calendars = _.sortBy(calendars, function(calendar) {
+                    return calendar.summary;
+                });
+                self.calendars = calendars;
                 self.trigger('change');
             } catch (ex) {
                 console.error(ex);
@@ -134,8 +135,8 @@ function CalendarList() {
     };
 
     this.findBySlug = function(slug) {
-        return _.find(this.children, function(child) {
-            return toSlug(shortName(child.summary)) === slug;
+        return _.find(this.calendars, function(calendar) {
+            return toSlug(toShortName(calendar.summary)) === slug;
         });
     };
 
@@ -166,8 +167,11 @@ function toSlug(value) {
     return value.toLocaleLowerCase().replace(' ', '-');
 }
 
-function shortName(name) {
-    return name.replace('Conf Room - ', '');
+function toShortName(name) {
+    if (name) {
+        return name.replace('Conf Room - ', '');
+    }
+    return '';
 }
 
 function formatDate(dt) {
@@ -212,10 +216,25 @@ function renderEvent(evt) {
     }
 
     var html = [];
-    var className = isCurrent(evt) ? 'current' :
-                    isNext(evt) ? 'next' : 'prev';
 
-    html.push('<div class="event ' + className + '">');
+    var className = [];
+    className.push('event');
+    className.push(isCurrent(evt) ? 'current' :
+                   isNext(evt) ? 'next' : 'prev');
+    className.push(isSameDay(evt) ? '' : 'not-today');
+    className = className.join(' ').trim();
+
+    html.push('<div class="' + className + '" title="');
+
+    html.push(evt.summary);
+    html.push('\n');
+    html.push(formatDate(evt.start.dateTime));
+    html.push(' &ndash; ');
+    html.push(formatTime(evt.end.dateTime));
+    html.push('\n');
+    html.push(evt.description || '');
+
+    html.push('">');
     html.push('<div class="summary">');
 
     // if (isNext(evt)) {
@@ -223,18 +242,14 @@ function renderEvent(evt) {
     // }
 
     html.push(evt.summary);
-    html.push(' <a href="' + evt.htmlLink + '" target="new" class="google-link">')
-    html.push('<i class="fa fa-google-plus-square" aria-hidden="true"></i></a>');
     html.push('</div>');
 
-    html.push('<div class="time" title="');
-    html.push(formatDate(evt.start.dateTime));
+    html.push('<div class="time">');
+    html.push(moment(evt.start.dateTime).calendar());
     html.push(' &ndash; ');
     html.push(formatTime(evt.end.dateTime));
-    html.push('\n');
-    html.push(evt.description || '');
-    html.push('">');
-    html.push(moment(evt.start.dateTime).calendar());
+    html.push(' <a href="' + evt.htmlLink + '" target="new" class="google-link">')
+    html.push('<i class="fa fa-google-plus-square" aria-hidden="true"></i></a>');
     html.push('</div>');
 
     html.push('</div>');
@@ -242,7 +257,7 @@ function renderEvent(evt) {
 }
 
 var RoomListView = Backbone.View.extend({
-    className: 'list',
+    className: 'rooms-list',
 
     initialize: function() {
         this.listenTo(this.model, 'change', this.render);
@@ -256,20 +271,33 @@ var RoomListView = Backbone.View.extend({
 
     renderPage: function() {
         var html = [];
-        html.push('<p class="now">' + formatDate(Clock.now()) + '</p>');
-        html.push(this.renderList());
+        if (this.model.calendars.length > 0) {
+            html.push('<p class="now">' + formatDate(Clock.now()) + '</p>');
+            html.push(this.renderList());
+        } else {
+            html.push('<div class="error">');
+            html.push('<p>');
+            html.push('<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ');
+            html.push('The Google account you are using is not authorized to view these calendars.');
+            html.push('</p>');
+            html.push('<p>');
+            html.push('<a href="#" onclick="signOut();">Sign out</a>');
+            html.push('</p>');
+            html.push('</div>');
+        }
         return html.join('');
     },
 
     renderList: function() {
         var html = [];
         var calendars = this.model;
-        _.each(calendars.children, function(cal) {
-            var name = shortName(cal.summary);
+        _.each(calendars.calendars, function(calendar) {
+            var name = toShortName(calendar.summary);
+            var evt = getCurrentEvent(calendar) || getNextEvent(calendar);
             html.push('<li class="room">');
             html.push('<div class="name">');
             html.push('<a href="#' + toSlug(name) + '">' + name + '</a>');
-            html.push(renderEvent(getCurrentEvent(cal) || getNextEvent(cal)));
+            html.push(renderEvent(evt));
             html.push('</div>');
             html.push('</li>');
         }, this);
@@ -283,7 +311,7 @@ var RoomDetailView = Backbone.View.extend({
     },
 
     attributes: function() {
-        var name = shortName(this.model.summary);
+        var name = toShortName(this.model.summary);
         return {
             'class': 'room-detail ' + toSlug(name) + ' style-' + _.random(2)
         };
@@ -365,10 +393,10 @@ var RoomDetailView = Backbone.View.extend({
 
     renderPage: function() {
         var html = [];
-        var name = shortName(this.model.summary);
+        var name = toShortName(this.model.summary);
         var className = getCurrentEvent(this.model) ? 'unavailable' : 'available';
 
-        html.push('<div class="header ' + className + '">');
+        html.push('<div class="content ' + className + '">');
         html.push('<h1>' + name + '</h1>');
 
         // html.push('<div class="pager">');
@@ -387,9 +415,9 @@ var RoomDetailView = Backbone.View.extend({
         //     html.push('<button class="reserve-room">Reserve</button>');
         // }
 
-        html.push('</div>');
         html.push('<div class="now">' + formatDate(Clock.now()) + '</div>');
-        html.push('<div class="back"><a href="#">Back</a></div>');
+        html.push('</div>');
+        html.push('<div class="bg"></div>');
         return html.join('');
     }
 });
@@ -405,7 +433,7 @@ var App = Marionette.Application.extend({
     initialize: function(options) {
         var self = this;
 
-        this.calendars = options.calendars;
+        this.calendarList = options.calendarList;
 
         this.router = new Router({
             controller: this,
@@ -433,7 +461,7 @@ var App = Marionette.Application.extend({
                 return $.Deferred().resolve();
             },
             delay: function() {
-                // Calculate seconds until next minute (plus a fudge factor).
+                // Calculate seconds until next minute (plus some slack).
                 return (60 - Clock.now().seconds() + 1) * 1000;
             }
         });
@@ -448,13 +476,13 @@ var App = Marionette.Application.extend({
     },
 
     index: function() {
-        var self = this;
+        var calendarList = this.calendarList;
         document.title = 'All Rooms';
 
         // Fetch all calendar events at an interval.
         var poll = new Poller({
             action: function() {
-                return self.calendars.fetch();
+                return calendarList.fetch();
             },
             delay: UPDATE_INTERVAL,
             // The calendar data must have been loaded already to get
@@ -468,19 +496,19 @@ var App = Marionette.Application.extend({
         };
 
         var view = new RoomListView({
-            model: this.calendars
+            model: calendarList
         });
         this.mainRegion.show(view);
     },
 
     showRoom: function(slug) {
-        var calendarData = this.calendars.findBySlug(slug);
+        var calendarData = this.calendarList.findBySlug(slug);
         if (!calendarData) {
             return this.index();
         }
 
         var calendar = new Calendar(calendarData);
-        document.title = shortName(calendar.summary);
+        document.title = toShortName(calendar.summary);
 
         var poll = new Poller({
             action: function() {
@@ -502,12 +530,12 @@ var App = Marionette.Application.extend({
 });
 
 function start() {
-    var calendars = new CalendarList();
-    calendars.once('change', function() {
+    var calendarList = new CalendarList();
+    calendarList.once('change', function() {
         var app = new App({
-            calendars: calendars
+            calendarList: calendarList
         });
         Backbone.history.start();
     });
-    calendars.fetch();
+    calendarList.fetch();
 }

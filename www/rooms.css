@@ -1,21 +1,21 @@
-.chicago { background-image: url(images/chicago/1.jpg); }
-.istanbul { background-image: url(images/istanbul/1.jpg); }
-.jakarta { background-image: url(images/jakarta/1.jpg); }
-.kiev { background-image: url(images/kiev/1.jpg); }
-.london { background-image: url(images/london/1.jpg); }
-.madrid { background-image: url(images/madrid/1.jpg); }
-.mumbai { background-image: url(images/mumbai/1.jpg); }
-.nairobi { background-image: url(images/nairobi/1.jpg); }
-.new-york { background-image: url(images/new-york/1.jpg); }
-.oslo { background-image: url(images/oslo/1.jpg); }
-.paris { background-image: url(images/paris/1.jpg); }
-.saigon { background-image: url(images/saigon/1.jpeg); }
-.salta { background-image: url(images/salta/1.jpg); }
-.shanghai { background-image: url(images/shanghai/1.jpg); }
-.springfield { background-image: url(images/springfield/1.jpg); }
-.stockholm { background-image: url(images/stockholm/1.jpg); }
-.sydney { background-image: url(images/sydney/1.jpg); }
-.tokyo { background-image: url(images/tokyo/1.jpg); }
+.chicago .bg { background-image: url(images/chicago/1.jpg); }
+.istanbul .bg { background-image: url(images/istanbul/1.jpg); }
+.jakarta .bg { background-image: url(images/jakarta/1.jpg); }
+.kiev .bg { background-image: url(images/kiev/1.jpg); }
+.london .bg { background-image: url(images/london/1.jpg); }
+.madrid .bg { background-image: url(images/madrid/1.jpg); }
+.mumbai .bg { background-image: url(images/mumbai/1.jpg); }
+.nairobi .bg { background-image: url(images/nairobi/1.jpg); }
+.new-york .bg { background-image: url(images/new-york/1.jpg); }
+.oslo .bg { background-image: url(images/oslo/1.jpg); }
+.paris .bg { background-image: url(images/paris/1.jpg); }
+.saigon .bg { background-image: url(images/saigon/1.jpeg); }
+.salta .bg { background-image: url(images/salta/1.jpg); }
+.shanghai .bg { background-image: url(images/shanghai/1.jpg); }
+.springfield .bg { background-image: url(images/springfield/1.jpg); }
+.stockholm .bg { background-image: url(images/stockholm/1.jpg); }
+.sydney .bg { background-image: url(images/sydney/1.jpg); }
+.tokyo .bg { background-image: url(images/tokyo/1.jpg); }
 .toronto.style-0,
-.toronto.style-1 { background-image: url(images/toronto/1.jpg); }
-.toronto.style-2 { background-image: url(images/toronto/2.jpg); }
+.toronto.style-1 .bg { background-image: url(images/toronto/1.jpg); }
+.toronto.style-2 .bg { background-image: url(images/toronto/2.jpg); }

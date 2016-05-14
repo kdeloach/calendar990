@@ -1,8 +1,9 @@
-body {
+html, body {
     margin: 0;
     font-family: sans-serif;
     font-size: larger;
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
 
 .hide {
@@ -20,39 +21,46 @@ li {
     padding: 0;
 }
 
-#loading,
-#auth {
-    position: absolute;
-    top: 40%;
+#container {
+    display: flex;
     width: 100%;
+    height: 100%;
+}
+
+.error {
+    padding: 25px;
+}
+
+#login {
+    margin: auto;
+}
+
+#loading {
+    margin: auto;
     text-align: center;
     font-size: 5vw;
 }
 
-.room-detail, .list {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+.event.not-today {
+    font-style: italic;
 }
-.list {
-    overflow: auto;
+.event.current .summary {
+    font-weight: bold;
 }
 
-.list .room .name {
+.rooms-list {
+    width: 100%;
+}
+.rooms-list .room .name {
     margin-bottom: 6px;
 }
-.list .event {
+.rooms-list .event {
     font-size: smaller;
-}
-.list .event.current .summary {
-    font-weight: bold;
 }
 
 .now {
     text-align: center;
-    font-size: 3vw;
+    font-size: 30px;
 }
 .room-detail .now {
     position: absolute;
@@ -60,17 +68,18 @@ li {
     right: 0;
     padding: 2vh;
     color: #999;
+    font-size: 3vw;
 }
 
 .room-detail {
-    overflow: hidden;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: 50% 50%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
     color: #444;
 }
 
-.room-detail .header {
+.room-detail .content {
     padding: 2vh;
     background: #fff;
 }
@@ -79,10 +88,10 @@ li {
     margin: 0;
     font-size: 10vw;
 }
-.room-detail .header.available h1 {
+.room-detail .content.available h1 {
     color: #00aeef;
 }
-.room-detail .header.unavailable h1,
+.room-detail .content.unavailable h1,
 .room-detail .events .current {
     color: #d2232a;
 }
@@ -97,12 +106,11 @@ li {
     color: #999;
 }
 
-.back {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 5px;
-    display: none;
+.room-detail .bg {
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50% 0;
 }
 
 #create-event-form {
