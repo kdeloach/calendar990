@@ -18,4 +18,4 @@ EOF
 
 aws s3api put-bucket-policy --bucket ${BUCKET} --policy file:///tmp/policy.json
 aws s3 website s3://${BUCKET} --index-document=index.html
-aws s3 sync /vagrant/www/ s3://${BUCKET}
+aws s3 sync --delete /vagrant/www/ s3://${BUCKET}
