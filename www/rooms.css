@@ -1,33 +1,21 @@
-.chicago { background-image: url(images/chicago/1.jpg); color: #fff; }
-
-.istanbul { background-image: url(images/istanbul/1.jpg); color: #fff; }
-.jakarta { background-image: url(images/jakarta/1.jpg); color: #fff; }
+.chicago { background-image: url(images/chicago/1.jpg); }
+.istanbul { background-image: url(images/istanbul/1.jpg); }
+.jakarta { background-image: url(images/jakarta/1.jpg); }
 .kiev { background-image: url(images/kiev/1.jpg); }
-.london { background-image: url(images/london/1.jpg); color: #fff; }
-.madrid { background-image: url(images/madrid/1.jpg); color: #fff; }
+.london { background-image: url(images/london/1.jpg); }
+.madrid { background-image: url(images/madrid/1.jpg); }
 .mumbai { background-image: url(images/mumbai/1.jpg); }
-.nairobi { background-image: url(images/nairobi/1.jpg); color: #fff; }
-
+.nairobi { background-image: url(images/nairobi/1.jpg); }
 .new-york { background-image: url(images/new-york/1.jpg); }
-
 .oslo { background-image: url(images/oslo/1.jpg); }
-.oslo .header { bottom: 0; color: #fff; }
-
 .paris { background-image: url(images/paris/1.jpg); }
-
-.saigon { background-image: url(images/saigon/1.jpeg); color: #fff; }
-
+.saigon { background-image: url(images/saigon/1.jpeg); }
 .salta { background-image: url(images/salta/1.jpg); }
-.salta .header { color: #fff; }
-
 .shanghai { background-image: url(images/shanghai/1.jpg); }
 .springfield { background-image: url(images/springfield/1.jpg); }
 .stockholm { background-image: url(images/stockholm/1.jpg); }
 .sydney { background-image: url(images/sydney/1.jpg); }
-
 .tokyo { background-image: url(images/tokyo/1.jpg); }
-
-.toronto { color: #fff; }
 .toronto.style-0,
 .toronto.style-1 { background-image: url(images/toronto/1.jpg); }
 .toronto.style-2 { background-image: url(images/toronto/2.jpg); }

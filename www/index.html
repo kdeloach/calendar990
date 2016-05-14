@@ -13,7 +13,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
   </head>
 <body>
-<div id="container"></div>
+<div id="container">
+    <div id="loading">Loading
+        <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i></div>
+    <div id="auth" class="hide">Authenticating
+        <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i></div>
+</div>
 <script type="text/javascript" src="main.js"></script>
+<script type="text/javascript">
+var CLIENT_ID = '940622694716-0s10g23k0ga1b8vus8n762i2ei2scu5u.apps.googleusercontent.com';
+var SCOPES = ['https://www.googleapis.com/auth/calendar'];
+
+function checkAuth() {
+    $('#loading').hide();
+    $('#auth').show();
+    gapi.auth.authorize({
+        client_id: CLIENT_ID,
+        scope: SCOPES.join(' '),
+        immediate: true
+    }, handleAuthResult);
+}
+
+function handleAuthResult(result) {
+    if (result && !result.error) {
+        $('#auth').hide();
+        $('#loading').show();
+        gapi.client.load('calendar', 'v3').then(start);
+    } else {
+        gapi.auth.authorize({
+            client_id: CLIENT_ID,
+            scope: SCOPES.join(' '),
+            immediate: false
+        }, handleAuthResult);
+    }
+}
+</script>
+<script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
 </body>
 </html>
