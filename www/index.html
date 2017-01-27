@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html debug="true">
   <head>
     <title>Room Schedule</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-signin-client_id" content="940622694716-0s10g23k0ga1b8vus8n762i2ei2scu5u.apps.googleusercontent.com">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="rooms.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
@@ -12,7 +14,61 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
   </head>
 <body>
-<div id="container"></div>
+<button onclick="onLoginClicked()">Login</button>
+<div id="container">
+    <div id="loading"><span class="message">Loading</span>
+        <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+    </div>
+    <div id="login" class="hide">
+         <div id="btn-sign-in" class="g-signin2"
+             data-onsuccess="onSignIn"
+			 data-width="240"
+             data-height="50"
+             data-longtitle="true",
+			 data-theme="dark"
+             data-scope="https://www.googleapis.com/auth/calendar"
+             data-cookiepolicy="single_host_origin"></div>
+    </div>
+</div>
 <script type="text/javascript" src="main.js"></script>
+<script type="text/javascript">
+var CLIENT_ID = '940622694716-0s10g23k0ga1b8vus8n762i2ei2scu5u.apps.googleusercontent.com';
+var SCOPES = ['https://www.googleapis.com/auth/calendar'];
+
+function init() {
+    $('#loading').hide();
+    $('#login').show();
+    refreshAuthToken(true);
+}
+
+function refreshAuthToken(immediate) {
+    console.log('refreshAuthToken');
+    gapi.auth.authorize({
+        client_id: CLIENT_ID,
+        scope: SCOPES.join(' '),
+        immediate: immediate
+    }, check);
+}
+
+function check(result) {
+    if (result && !result.error) {
+        onSignIn();
+    } else {
+        refreshAuthToken(false);
+    }
+}
+
+function onLoginClicked() {
+    refreshAuthToken(false);
+}
+
+function onSignIn() {
+	$('#login').hide();
+	$('#loading').show();
+	$('#loading .message').text('Fetching calendars');
+	gapi.client.load('calendar', 'v3').then(start);
+}
+</script>
+<script src="https://apis.google.com/js/client:platform.js?onload=init"></script>
 </body>
 </html>

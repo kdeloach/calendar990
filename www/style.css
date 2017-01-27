@@ -1,8 +1,9 @@
-body {
+html, body {
     margin: 0;
     font-family: sans-serif;
     font-size: larger;
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
 
 .hide {
@@ -20,84 +21,103 @@ li {
     padding: 0;
 }
 
-.room-detail, .list {
-    position: absolute;
-    top: 0;
-    left: 0;
+#container {
+    display: flex;
     width: 100%;
     height: 100%;
 }
-.list {
-    overflow: auto;
+
+.error {
+    padding: 25px;
 }
 
-.list .room .name {
-    margin-bottom: 6px;
+#login {
+    margin: auto;
 }
-.list .event {
-    font-size: smaller;
+
+#loading {
+    margin: auto;
+    text-align: center;
+    font-size: 5vw;
 }
-.list .event.current .summary {
-    font-weight: bold;
-}
-.list .event.next,
-.room-detail .event.next {
+
+.event.not-today {
     font-style: italic;
 }
+.event.current .summary {
+    font-weight: bold;
+}
 
+.rooms-list {
+    width: 100%;
+}
+.rooms-list .room .name {
+    margin-bottom: 6px;
+}
+.rooms-list .event {
+    font-size: smaller;
+}
 
-.list .now {
+.now {
     text-align: center;
+    font-size: 30px;
 }
 .room-detail .now {
     position: absolute;
     top: 0;
     right: 0;
-    padding: 5px;
+    padding: 2vh;
+    color: #999;
+    font-size: 3vw;
 }
 
 .room-detail {
-    overflow: hidden;
-    position: absolute;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
-    background-repeat: no-repeat;
-    background-size: cover;
+    color: #444;
 }
 
-.room-detail .header {
-    position: absolute;
-    margin: 15px;
+.room-detail .content {
+    padding: 2vh;
+    background: #fff;
 }
 
 .room-detail h1 {
     margin: 0;
-    margin-bottom: 15px;
-    font-size: 45pt;
+    font-size: 10vw;
+}
+.room-detail .content.available h1 {
+    color: #00aeef;
+}
+.room-detail .content.unavailable h1,
+.room-detail .events .current {
+    color: #d2232a;
 }
 
-.room-detail .event {
-    display: none;
-}
-.room-detail .event.show {
-    display: block;
+.room-detail .events {
+    font-size: 5vw;
 }
 
-.pager a.disabled {
-    color: gray;
+.room-detail .time,
+.room-detail .google-link {
+    font-size: smaller;
+    color: #999;
 }
 
-.back {
+.room-detail .bg {
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50% 0;
+}
+
+#create-event-form {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 5px;
-    display: none;
-}
-
-.updated-at {
-    font-style: italic;
-    font-size: 12px;
-    text-align: right;
-    margin: 10px;
+    width: 100%;
+    height: 100%;
+    background: #fff;
 }
