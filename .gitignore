@@ -1,5 +1,1 @@
-*.pyc
-node_modules/
-env/
-.vagrant/
-www/events.json
+.env

@@ -1,0 +1,14 @@
+version: '2'
+services:
+  app:
+    image: calendar990
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8000:80"
+    volumes:
+        - ./src:/usr/src
+    command: python -m http.server --bind 0.0.0.0 80
