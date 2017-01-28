@@ -30,6 +30,10 @@ html, body {
     width: 18%;
     text-align: center;
     transition: all 1s;
+    background: #eee;
+}
+.room-ghost {
+    opacity: 0;
 }
 .room:hover {
     flex: 20 0 auto;

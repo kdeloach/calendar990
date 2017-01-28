@@ -108,7 +108,7 @@ function renderRoom(room) {
     var title = getRoomName(room);
     var event = getRoomEvent(room);
     var color = getRoomColor(event);
-    var $el = $('<div class="room">');
+    var $el = $('<div class="room room-ghost">');
     $el.addClass(color);
     $el.append('<div class="room-title">' + title + '</div>');
     if (event) {
@@ -118,6 +118,12 @@ function renderRoom(room) {
         $el.append('<div class="room-content" title="' + tooltip + '">' +
                 event.summary + '</div>');
     }
+
+    // Fade in animation.
+    setTimeout(function() {
+        $el.removeClass('room-ghost');
+    }, Math.random() * 1000);
+
     $('#container').append($el);
 }
 
@@ -136,17 +142,14 @@ function start() {
     }
     _started = true;
 
-    var i = 0;
     listAllEvents().then(function(rooms) {
         $('#loading').hide();
         _.each(rooms, function(room) {
-            setTimeout(function() {
             if (room.error) {
                 renderError();
             } else {
                 renderRoom(room);
             }
-            }, i++ * 20);
         });
     });
 }
