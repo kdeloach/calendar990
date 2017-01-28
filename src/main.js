@@ -115,19 +115,37 @@ function renderRoom(room) {
         var start = moment(event.start.dateTime).local().format('YYYY-MM-DD HH:mm');
         var end = moment(event.end.dateTime).local().format('HH:mm');
         var tooltip = start + ' - ' + end;
-        $el.append('<div class="room-event" title="' + tooltip + '">' +
+        $el.append('<div class="room-content" title="' + tooltip + '">' +
                 event.summary + '</div>');
     }
     $('#container').append($el);
 }
 
+function renderError() {
+    var $el = $('<div class="room">');
+    $el.append('<div class="room-title">Error</div>');
+    $el.append('<div class="room-content">Does your account have the correct permissions?</div>');
+    $('#container').append($el);
+}
+
+var _started = false;
 function start() {
+    // GAPI calls the start function twice (in production only)
+    if (_started) {
+        return;
+    }
+    _started = true;
+
     var i = 0;
     listAllEvents().then(function(rooms) {
         $('#loading').hide();
         _.each(rooms, function(room) {
             setTimeout(function() {
+            if (room.error) {
+                renderError();
+            } else {
                 renderRoom(room);
+            }
             }, i++ * 20);
         });
     });
