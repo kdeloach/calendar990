@@ -1,0 +1,7 @@
+FROM node:7.4-slim
+
+MAINTAINER kdeloach@gmail.com
+
+WORKDIR /usr/src/
+
+RUN npm install -g --silent jshint

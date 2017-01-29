@@ -3,7 +3,7 @@ services:
   app:
     image: calendar990
     build:
-      context: .
+      context: ./src
       dockerfile: Dockerfile
     env_file:
       - .env
@@ -12,3 +12,11 @@ services:
     volumes:
         - ./src:/usr/src
     command: python -m http.server --bind 0.0.0.0 80
+
+  app-node:
+    image: calendar990-node
+    build:
+      context: ./src
+      dockerfile: Dockerfile.node
+    volumes:
+        - ./src:/usr/src
