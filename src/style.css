@@ -1,10 +1,11 @@
 html, body {
     margin: 0;
-    font-family: cursive;
     font-size: 3vh;
     width: 100%;
     height: 100%;
     background: #eee;
+    color: #000;
+    font-family: "libre franklin", sans-serif;
 }
 
 .hide {
@@ -27,10 +28,12 @@ html, body {
     flex-direction: column;
     justify-content: center;
     flex: 1 1 auto;
-    width: 18%;
+    min-width: 18%;
     text-align: center;
     transition: all 1s;
     background: #eee;
+    padding: 10px;
+    font-weight: 400;
 }
 .room-ghost {
     opacity: 0;
@@ -45,11 +48,14 @@ html, body {
     background: yellow;
 }
 .room-red {
-    background: lightcoral;
+    background: #E74C3C;
     color: #fff;
 }
 .room-content {
     font-size: 2vh;
+}
+.room-title {
+    margin-bottom: 10px;
 }
 
 .error {
