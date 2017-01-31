@@ -38,9 +38,6 @@ html, body {
 .room-ghost {
     opacity: 0;
 }
-.room:hover {
-    flex: 20 0 auto;
-}
 .room-green {
     background: lightgreen;
 }
