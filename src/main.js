@@ -140,8 +140,8 @@ function renderError() {
     var $el = $('<div class="room">');
     $el.append('<div class="room-title">Error</div>');
     $el.append('<div class="room-content"><p>Does your account have the correct permissions?</p>' +
-               '<p><a href="#" onClick="javascript:refreshAuthToken(false)">Sign in with a different account</a></p></div>');
-    $('#container').empty().append($el);
+               '<p><a href="#" onClick="javascript:logout()">Sign in with a different account</a></p></div>');
+    $('#container').append($el);
 }
 
 var _started = false;

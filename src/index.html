@@ -42,6 +42,13 @@ function init() {
     refreshAuthToken(true);
 }
 
+function logout() {
+    gapi.auth.signOut();
+    $('.room').remove();
+    $('#loading').hide();
+    $('#login').show();
+}
+
 function refreshAuthToken(immediate) {
     gapi.auth.authorize({
         client_id: CLIENT_ID,
