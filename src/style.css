@@ -1,6 +1,6 @@
 html, body {
     margin: 0;
-    font-size: 3vh;
+    font-size: 4vh;
     width: 100%;
     height: 100%;
     background: #fff;
@@ -42,8 +42,9 @@ html, body {
 .room-yellow { background: rgb(255, 255, 0); }
 .room-red { background: rgb(231, 76, 60); color: #fff; }
 
+.room-title { font-size: 4vh; margin-bottom: 10px; }
 .room-content { font-size: 2vh; }
-.room-title { margin-bottom: 10px; }
+.room-subtext { font-size: 1.5vh; }
 
 #login {
     margin: auto;
@@ -55,9 +56,12 @@ html, body {
 .madrid { order: 40; }
 .saigon { order: 50; }
 .nairobi { order: 60; }
-.istanbul { order: 70; font-size: xx-large; }
+.istanbul { order: 70; }
 .kiev { order: 80; }
 .mumbai { order: 90; }
-.sydney { order: 100; font-size: xx-large; }
+.sydney { order: 100; }
 .shanghai { order: 110; }
 .tokyo { order: 120; }
+
+.istanbul > .room-title,
+.sydney > .room-title { font-size: 6vh; }
