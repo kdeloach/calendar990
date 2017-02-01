@@ -3,7 +3,7 @@ html, body {
     font-size: 3vh;
     width: 100%;
     height: 100%;
-    background: #eee;
+    background: #fff;
     color: #000;
     font-family: "libre franklin", sans-serif;
 }
@@ -31,33 +31,19 @@ html, body {
     width: 20%;
     text-align: center;
     transition: all 1s;
-    background: #eee;
     padding: 10px;
     font-weight: 400;
 }
 .room-ghost {
     opacity: 0;
 }
-.room-green {
-    background: lightgreen;
-}
-.room-yellow {
-    background: yellow;
-}
-.room-red {
-    background: #E74C3C;
-    color: #fff;
-}
-.room-content {
-    font-size: 2vh;
-}
-.room-title {
-    margin-bottom: 10px;
-}
 
-.error {
-    padding: 25px;
-}
+.room-green { background: rgb(144, 238, 144); }
+.room-yellow { background: rgb(255, 255, 0); }
+.room-red { background: rgb(231, 76, 60); color: #fff; }
+
+.room-content { font-size: 2vh; }
+.room-title { margin-bottom: 10px; }
 
 #login {
     margin: auto;
