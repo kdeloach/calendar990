@@ -28,7 +28,7 @@ html, body {
     flex-direction: column;
     justify-content: center;
     flex: 1 1 auto;
-    min-width: 18%;
+    width: 20%;
     text-align: center;
     transition: all 1s;
     background: #eee;
@@ -62,3 +62,16 @@ html, body {
 #login {
     margin: auto;
 }
+
+.toronto { order: 10; }
+.new-york { order: 20; }
+.london { order: 30; }
+.madrid { order: 40; }
+.saigon { order: 50; }
+.nairobi { order: 60; }
+.istanbul { order: 70; font-size: xx-large; }
+.kiev { order: 80; }
+.mumbai { order: 90; }
+.sydney { order: 100; font-size: xx-large; }
+.shanghai { order: 110; }
+.tokyo { order: 120; }

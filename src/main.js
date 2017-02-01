@@ -56,9 +56,6 @@ function listAllEvents() {
         var rooms = _.map(batchResponse.result, function(response) {
             return response.result;
         });
-        rooms = _.sortBy(rooms, function(room) {
-            return room.summary;
-        });
         defer.resolve(rooms);
     });
 
@@ -110,6 +107,7 @@ function renderRoom(room) {
     var color = getRoomColor(event);
     var $el = $('<div class="room room-ghost">');
     $el.addClass(color);
+    $el.addClass(title.replace(' ', '-').toLocaleLowerCase());
     $el.append('<div class="room-title">' + title + '</div>');
     if (event) {
         var start = moment(event.start.dateTime).local().format('YYYY-MM-DD HH:mm');
