@@ -1,25 +1,25 @@
 $.ajaxSetup({ cache: false });
 
 var CALENDARS = [
-    'azavea.com_37323531353137392d3335@resource.calendar.google.com', // Chicago
-    'azavea.com_2d3937313336363332343536@resource.calendar.google.com', // Jakarta
+    // 'azavea.com_37323531353137392d3335@resource.calendar.google.com', // Chicago
+    // 'azavea.com_2d3937313336363332343536@resource.calendar.google.com', // Jakarta
+    // 'azavea.com_39393439323539323133@resource.calendar.google.com', // Oslo
+    // 'azavea.com_2d34343937353334392d353230@resource.calendar.google.com', // Paris
+    // 'azavea.com_2d3530363332393734333633@resource.calendar.google.com', // Salta
+    // 'azavea.com_2d3938333739393434383537@resource.calendar.google.com', // Stockholm
+    // 'azavea.com_2d36333733303039323735@resource.calendar.google.com' // Springfield
     'azavea.com_2d3832333338333036313739@resource.calendar.google.com', // Istanbul
     'azavea.com_2d33363732373535372d383539@resource.calendar.google.com', // Kiev
-    'azavea.com_39393439323539323133@resource.calendar.google.com', // Oslo
     'azavea.com_2d3531323935383832313738@resource.calendar.google.com', // Mumbai
-    'azavea.com_2d34343937353334392d353230@resource.calendar.google.com', // Paris
     'azavea.com_32313332323030362d333532@resource.calendar.google.com', // London
-    'azavea.com_2d3530363332393734333633@resource.calendar.google.com', // Salta
     'azavea.com_2d35373131323734362d383139@resource.calendar.google.com', // Nairobi
     'azavea.com_2d3433323639353434333335@resource.calendar.google.com', // Madrid
     'azavea.com_2d39343638333133382d393132@resource.calendar.google.com', // Saigon
     'azavea.com_2d313034383935352d393134@resource.calendar.google.com', // Shanghai
-    'azavea.com_2d3938333739393434383537@resource.calendar.google.com', // Stockholm
     'azavea.com_3336343733393238383535@resource.calendar.google.com', // New York
     'azavea.com_39383537323133383131@resource.calendar.google.com', // Sydney
     'azavea.com_3732333135313339353335@resource.calendar.google.com', // Tokyo
     'azavea.com_323532323135382d383738@resource.calendar.google.com', // Toronto
-    'azavea.com_2d36333733303039323735@resource.calendar.google.com' // Springfield
 ];
 
 var Clock = (function() {
