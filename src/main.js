@@ -68,21 +68,21 @@ function getRoomName(room) {
 
 // Exclude events that have ended.
 function upcomingEvents(items) {
-    return _.filter(items, function(evt) {
+    return _.filter(items, function(event) {
         var now = Clock.now();
-        var end = moment(evt.end.dateTime).diff(now, 'minutes');
+        var end = moment(event.end.dateTime).diff(now, 'minutes');
         return end > 0;
     });
 }
 
 // Return room color based on the upcoming event.
-function getRoomColor(evt) {
-    if (!evt) {
+function getRoomColor(event) {
+    if (!event) {
         return 'room-green';
     }
 
     var now = Clock.now();
-    var start = moment(evt.start.dateTime).diff(now, 'minutes');
+    var start = moment(event.start.dateTime).diff(now, 'minutes');
 
     if (start > 15) {
         // The event is 15+ minutes away.
