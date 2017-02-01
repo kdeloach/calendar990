@@ -16,8 +16,11 @@
   </head>
 <body>
 <div id="container">
-    <div id="loading"><span class="message">Loading</span>
-        <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+    <div id="loading" class="room">
+        <div class="room-title">
+            <span class="message">Loading</span>
+            <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+        </div>
     </div>
     <div id="login" class="hide">
          <div id="btn-sign-in" class="g-signin2"
@@ -43,7 +46,8 @@ function refreshAuthToken(immediate) {
     gapi.auth.authorize({
         client_id: CLIENT_ID,
         scope: SCOPES.join(' '),
-        immediate: immediate
+        immediate: immediate,
+        authuser: -1
     }, check);
 }
 

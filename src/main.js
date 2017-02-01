@@ -130,8 +130,9 @@ function renderRoom(room) {
 function renderError() {
     var $el = $('<div class="room">');
     $el.append('<div class="room-title">Error</div>');
-    $el.append('<div class="room-content">Does your account have the correct permissions?</div>');
-    $('#container').append($el);
+    $el.append('<div class="room-content"><p>Does your account have the correct permissions?</p>' +
+               '<p><a href="#" onClick="javascript:refreshAuthToken(false)">Sign in with a different account</a></p></div>');
+    $('#container').empty().append($el);
 }
 
 var _started = false;
@@ -144,12 +145,14 @@ function start() {
 
     listAllEvents().then(function(rooms) {
         $('#loading').hide();
-        _.each(rooms, function(room) {
+        for (var i = 0; i < rooms.length; i++) {
+            var room = rooms[i];
             if (room.error) {
                 renderError();
-            } else {
-                renderRoom(room);
+                _started = false;
+                break;
             }
-        });
+            renderRoom(room);
+        }
     });
 }
