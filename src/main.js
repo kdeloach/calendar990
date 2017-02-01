@@ -84,16 +84,22 @@ function getRoomColor(event) {
     var now = Clock.now();
     var start = moment(event.start.dateTime).diff(now, 'minutes');
 
-    if (start > 15) {
-        // The event is 15+ minutes away.
+    if (start > 30) {
+        // The event is 30+ minutes away.
         return 'room-green';
-    } else if (start > 0 && start <= 15) {
+    } else if (start > 0 && start <= 30) {
         // The event will start soon.
         return 'room-yellow';
     } else {
         // The event must be in progress.
         return 'room-red';
     }
+}
+
+function getEventTooltip(event) {
+    var start = moment(event.start.dateTime).local().format('YYYY-MM-DD HH:mm');
+    var end = moment(event.end.dateTime).local().format('HH:mm');
+    return start + ' - ' + end;
 }
 
 function getRoomEvent(room) {
@@ -110,11 +116,16 @@ function renderRoom(room) {
     $el.addClass(title.replace(' ', '-').toLocaleLowerCase());
     $el.append('<div class="room-title">' + title + '</div>');
     if (event) {
-        var start = moment(event.start.dateTime).local().format('YYYY-MM-DD HH:mm');
-        var end = moment(event.end.dateTime).local().format('HH:mm');
-        var tooltip = start + ' - ' + end;
-        $el.append('<div class="room-content" title="' + tooltip + '">' +
-                event.summary + '</div>');
+        var tooltip = getEventTooltip(event);
+        var content = event.summary;
+        var now = Clock.now();
+        var start = moment(event.start.dateTime).diff(now, 'minutes');
+
+        if (start > 0 && start <= 30) {
+            content += '<div class="room-subtext">Available for ' + start + ' minutes</div>';
+        }
+
+        $el.append('<div class="room-content" title="' + tooltip + '">' + content + '</div>');
     }
 
     // Fade in animation.
