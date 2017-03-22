@@ -25,10 +25,10 @@
     <div id="login" class="hide">
          <div id="btn-sign-in" class="g-signin2"
              data-onsuccess="onSignIn"
-			 data-width="240"
+             data-width="240"
              data-height="50"
              data-longtitle="true",
-			 data-theme="dark"
+             data-theme="dark"
              data-scope="https://www.googleapis.com/auth/calendar"
              data-cookiepolicy="single_host_origin"></div>
     </div>
@@ -69,10 +69,10 @@ function check(result) {
 }
 
 function onSignIn() {
-	$('#login').hide();
-	$('#loading').show();
-	$('#loading .message').text('Downloading events');
-	gapi.client.load('calendar', 'v3').then(start);
+    $('#login').hide();
+    $('#loading').show();
+    $('#loading .message').text('Downloading events');
+    gapi.client.load('calendar', 'v3').then(start);
 }
 </script>
 <script src="https://apis.google.com/js/client:platform.js?onload=init"></script>
