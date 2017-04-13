@@ -11,6 +11,7 @@ services:
       - "8000:80"
     volumes:
         - ./src:/usr/src
+        - ./version.txt:/usr/src/version.txt
     command: python -m http.server --bind 0.0.0.0 80
 
   app-node:

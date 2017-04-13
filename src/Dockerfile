@@ -11,4 +11,4 @@ COPY requirements.txt /tmp/
 RUN pip install -r /tmp/requirements.txt \
   && rm /tmp/requirements.txt
 
-WORKDIR /usr/src/
+WORKDIR /usr/src
